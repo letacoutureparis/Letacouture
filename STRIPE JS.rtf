@@ -1,26 +1,51 @@
 const stripe = Stripe('pk_live_51KjObaPmVe2UlLkIYxg49q2fefT4mgXk8pASirV5q3FEfGBO1zFiZq8Myr9r2DWZE2qqHyJIkfqdvQdQvXupAMRb00aH1ItyZX'); // Ta clé publique Stripe
 
+
+
 const payButtons = document.querySelectorAll('.pay-button');
 
+
+
 payButtons.forEach((button) => {
+
     button.addEventListener('click', () => {
+
         const price = button.getAttribute('data-price');
+
         const name = button.getAttribute('data-name');
+
         const image = button.getAttribute('data-image');
+
         
-        fetch('/create-checkout-session', {
+
+        fetch('/.netlify/functions/create-checkout-session', {
+
             method: 'POST',
+
             body: JSON.stringify({ price, name, image }),
+
             headers: {
-                'Content-Type': 'application/json'
-            }
+
+                'Content-Type': 'application/json',
+
+            },
+
         })
+
         .then(response => response.json())
+
         .then(sessionId => {
+
             stripe.redirectToCheckout({ sessionId: sessionId.id });
+
         })
+
         .catch((error) => {
+
             console.error('Erreur lors du paiement : ', error);
+
         });
+
     });
+
 });
